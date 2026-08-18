@@ -13,6 +13,8 @@ import cookieParser from "cookie-parser";
 import { swaggerSpec } from "./config/swagger.js";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 import { authLimiter, globalLimiter } from "./middlewares/rateLimiter.js";
+import authRoutes from "./routes/authRoutes.js";
+import parcelRoutes from "./routes/parcelRoutes.js";
 
 dotenv.config();
 
@@ -30,8 +32,7 @@ app.use(morgan("dev")); // For Logs
 app.use(compression()); // For reducing the file size for performance
 app.use(express.json()); // For body parser
 app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-app.use(notFoundHandler);
-app.use(errorHandler);
+
 // Global Ratelimiter
 app.use(globalLimiter);
 
@@ -41,3 +42,9 @@ app.get("/health", (req, res) => {
     message: "Working Perfectly.",
   });
 });
+
+app.use("/api/auth", authRoutes);
+app.use("/api/parcel", parcelRoutes);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
